@@ -1,0 +1,54 @@
+services:
+  zookeeper:
+    container_name: ms_zookeeper
+    image: 'bitnami/zookeeper:3'
+    ports:
+      - '2181:2181'
+    volumes:
+      - 'zookeeper_data:/bitnami'
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+
+  kafka:
+    container_name: ms_kafka
+    image: 'bitnami/kafka:2'
+    ports:
+      - '9092:9092'
+    volumes:
+      - 'kafka_data:/bitnami'
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    depends_on:
+      - zookeeper
+
+  pg_users:
+    image: postgres:latest
+    container_name: pg_users
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: user123
+      POSTGRES_DB: users
+    ports:
+      - 5440:5432
+    volumes:
+      - ./users/pg_users:/var/lib/postgresql/data
+  pg_posts:
+    image: postgres:latest
+    container_name: pg_posts
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: post123
+      POSTGRES_DB: posts
+    ports:
+      - 5441:5432
+    volumes:
+      - ./posts/pg_posts:/var/lib/postgresql/data
+
+volumes:
+  zookeeper_data:
+    driver: local
+  kafka_data:
+    driver: local
