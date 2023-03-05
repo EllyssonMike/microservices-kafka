@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AuthorRepository } from 'src/app/repositories/author.repository';
-import { CreateAuthorController } from './create-author/create-author.controller';
-import { CreateAuthorService } from './create-author/create-author.service';
+import { CreateAuthorController } from './usecases/create-author/create-author.controller';
+import { CreateAuthorService } from './usecases/create-author/create-author.service';
 
 @Module({
   imports: [],

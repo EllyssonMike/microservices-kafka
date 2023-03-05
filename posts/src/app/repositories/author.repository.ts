@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { prismaClient } from 'src/shared/database/prisma/client';
-import { CreateAuthorRequest } from '../usecases/dtos/create-author.request.dto';
+import { CreateAuthorRequest } from '../../modules/authors/dtos/create-author.request.dto';
 
 @Injectable()
 export class AuthorRepository {

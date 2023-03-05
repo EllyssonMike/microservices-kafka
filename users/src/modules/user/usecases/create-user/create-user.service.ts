@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { UserRepository } from 'src/app/repositories/user.repository';
 import { KafkaMessageBroker } from 'src/shared/adapters/amqp/kafka/kafka.adapter';
-import { CreateUserRequest } from './dtos/create-user.request.dto';
+import { CreateUserRequest } from '../../dtos/create-user.request.dto';
 
 @Injectable()
 export class CreateUserService {

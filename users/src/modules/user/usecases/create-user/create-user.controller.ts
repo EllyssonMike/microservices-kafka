@@ -1,8 +1,8 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { User } from '@prisma/client';
 import ApplicationError from 'src/shared/errors/application.error';
+import { CreateUserRequest } from '../../dtos/create-user.request.dto';
 import { CreateUserService } from './create-user.service';
-import { CreateUserRequest } from './dtos/create-user.request.dto';
 
 @Controller('/user/create')
 export class CreateUserController {

@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { UserRepository } from 'src/app/repositories/user.repository';
 import { KafkaMessageBroker } from 'src/shared/adapters/amqp/kafka/kafka.adapter';
-import { CreateUserController } from './create-user/create-user.controller';
-import { CreateUserService } from './create-user/create-user.service';
+import { CreateUserController } from './usecases/create-user/create-user.controller';
+import { CreateUserService } from './usecases/create-user/create-user.service';
 
 @Module({
   imports: [],

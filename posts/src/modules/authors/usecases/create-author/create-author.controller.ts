@@ -1,6 +1,6 @@
 import { Controller } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
 import ApplicationError from 'src/shared/errors/application.error';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import { CreateAuthorRequest } from '../../dtos/create-author.request.dto';
 import { CreateAuthorService } from './create-author.service';
 
