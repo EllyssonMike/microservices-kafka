@@ -1,28 +1,48 @@
+version: '3.9'
 services:
   zookeeper:
     container_name: ms_zookeeper
-    image: 'bitnami/zookeeper:3'
+    image: confluentinc/cp-zookeeper:latest
     ports:
-      - '2181:2181'
+      - 2181:2181
     volumes:
-      - 'zookeeper_data:/bitnami'
+      - zookeeper_data:/var/lib/zookeeper/data
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
-
+      - ZOOKEEPER_CLIENT_PORT=2181
+    networks:
+      - internal
   kafka:
     container_name: ms_kafka
-    image: 'bitnami/kafka:2'
+    image: confluentinc/cp-kafka:latest
     ports:
-      - '9092:9092'
+      - 9092:9092
     volumes:
-      - 'kafka_data:/bitnami'
+      - kafka_data:/var/lib/kafka/data
     environment:
-      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
-      - KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR=1
-      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
-      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_BROKER_ID=1
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_INTER_BROKER_LISTENER_NAME=INTERNAL
+      - KAFKA_LISTENERS=INTERNAL://:9092
+      - KAFKA_ADVERTISED_LISTENERS=INTERNAL://kafka:9092
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=INTERNAL:PLAINTEXT
     depends_on:
       - zookeeper
+    networks:
+      - internal
+  control-center:
+    image: confluentinc/cp-enterprise-control-center:latest
+    depends_on:
+      - kafka
+    ports:
+      - "9021:9021"
+    environment:
+      CONTROL_CENTER_BOOTSTRAP_SERVERS: 'kafka:9092'
+      CONTROL_CENTER_REPLICATION_FACTOR: 1
+      PORT: 9021
+    networks:
+      - internal
 
   pg_users:
     image: postgres:latest
@@ -34,7 +54,9 @@ services:
     ports:
       - 5440:5432
     volumes:
-      - ./users/pg_users:/var/lib/postgresql/data
+      - pg_users:/var/lib/postgresql/data
+    networks:
+      - internal
   pg_posts:
     image: postgres:latest
     container_name: pg_posts
@@ -45,10 +67,53 @@ services:
     ports:
       - 5441:5432
     volumes:
-      - ./posts/pg_posts:/var/lib/postgresql/data
+      - pg_posts:/var/lib/postgresql/data
+    networks:
+      - internal
 
+  ms_users:
+    container_name: ms_users
+    image: ms_users:latest
+    build:
+      context: ./users
+    command: ['sh', '-c', 'yarn prisma migrate dev && yarn start:dev']
+    ports:
+      - 5000:3000
+    environment:
+      - MS_DEPLOYMENT_MODE=${MS_DEPLOYMENT_MODE}
+    volumes:
+      - ./users:/app
+    depends_on:
+      - pg_users
+      - kafka
+    networks:
+      - internal
+  ms_posts:
+    container_name: ms_posts
+    image: ms_posts:latest
+    build:
+      context: ./posts
+    command: ['sh', '-c', 'yarn prisma migrate dev && yarn start:dev']
+    ports:
+      - 6000:3000
+    environment:
+      - MS_DEPLOYMENT_MODE=${MS_DEPLOYMENT_MODE}
+    volumes:
+      - ./posts:/app
+    depends_on:
+      - pg_posts
+      - kafka
+    networks:
+      - internal
+networks:
+  internal:
+    driver: bridge
 volumes:
   zookeeper_data:
     driver: local
   kafka_data:
     driver: local
+  pg_users:
+  pg_posts:
+  ms_users:
+  ms_posts:

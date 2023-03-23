@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { AuthorModule } from './modules/authors/author.module';
-import { KafkaMessageBroker } from './shared/messaging/kafka/kafka.service';
+import { KafkaModule } from './shared/messaging/kafka/kafka.module';
 
 @Module({
-  imports: [AuthorModule],
+  imports: [KafkaModule, AuthorModule],
   controllers: [],
-  providers: [KafkaMessageBroker],
+  providers: [],
 })
 export class AppModule {}

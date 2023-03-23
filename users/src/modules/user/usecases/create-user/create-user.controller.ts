@@ -1,6 +1,6 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { User } from '@prisma/client';
 import ApplicationError from 'src/shared/errors/application.error';
+import { User } from '@prisma/client';
+import { Body, Controller, Post } from '@nestjs/common';
 import { CreateUserRequest } from '../../dtos/create-user.request.dto';
 import { CreateUserService } from './create-user.service';
 

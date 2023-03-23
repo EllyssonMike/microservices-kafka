@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { UserRepository } from 'src/app/repositories/user.repository';
-import { KafkaMessageBroker } from 'src/shared/adapters/amqp/kafka/kafka.adapter';
+import { KafkaModule } from 'src/shared/adapters/amqp/kafka/kafka.module';
 import { CreateUserController } from './usecases/create-user/create-user.controller';
 import { CreateUserService } from './usecases/create-user/create-user.service';
 
 @Module({
-  imports: [],
+  imports: [KafkaModule],
   controllers: [CreateUserController],
-  providers: [UserRepository, CreateUserService, KafkaMessageBroker],
+  providers: [UserRepository, CreateUserService],
 })
 export class UserModule {}

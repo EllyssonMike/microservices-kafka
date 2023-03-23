@@ -1,13 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Kafka } from 'kafkajs';
+import kafkaClient from './kafka.client';
 
 @Injectable()
 export class KafkaMessageBroker extends Kafka {
   constructor() {
-    super({
-      clientId: 'users',
-      brokers: ['localhost:9092'],
-    });
+    super(kafkaClient);
   }
 
   async publish<T = any>(topic: string, message: T) {

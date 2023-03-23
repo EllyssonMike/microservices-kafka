@@ -1,0 +1,10 @@
+node_modules/
+pg_posts/
+.git
+.gitignore
+.eslintrc.js
+.prettierrc
+README.md
+nest-cli.json
+package-lock.json
+yarn-error.log
